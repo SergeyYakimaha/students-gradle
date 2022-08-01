@@ -9,7 +9,7 @@ def cleanupSteps
 def createCheckoutStep(platform) {
     return {
         //node(label: platform) {
-        node(any) {
+        node() {
             stage("Checkout on $platform") {
                 checkout scm
             }
