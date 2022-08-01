@@ -19,23 +19,21 @@ def createCheckoutStep(platform) {
 
 //////////////////////////////////////////////////////////////////////////////
 
-// pipeline {
-//   agent any
-//   tools {
-//     gradle '4.10.2'
-//   }
-//   stages {
-//     stage('Checkout on Windows') {
-//       steps {
-//         checkout scm
-//       }
-//     }
-//   }
-// }
+def createCleanupStep(platform) {
+    return {
+        //node(label: platform) {
+        node {
+            deleteDir()
+        }
+    }
+}
+
+//////////////////////////////////////////////////////////////////////////////
 
 stage('Initialize') {
 
-	checkoutSteps = ['Checkout on Windows' : createCheckoutStep('windows')]
+	checkoutSteps = ['Checkout on Windows' : createCheckoutStep('windows'),
+					 'Checkout on Linux' : createCheckoutStep('linux')]
 
 // 	buildAndTestSteps = ['Build on Windows' : createBuildStep('windows')]
 //
@@ -43,7 +41,8 @@ stage('Initialize') {
 //
 // 	publishSteps = ['Publish on Windows' : createPublishSteps('windows')]
 //
-// 	cleanupSteps = ['Clean up on Windows' : createCleanupStep('windows')]
+	cleanupSteps = ['Clean up on Windows' : createCleanupStep('windows'),
+					'Clean up on Linux' : createCleanupStep('linux')]
 }
 
 try {
