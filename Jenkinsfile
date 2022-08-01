@@ -49,4 +49,6 @@ try {
 	stage('Checkout') {
 		parallel checkoutSteps
 	}
+	finally {
+	}
 }
