@@ -50,5 +50,8 @@ try {
 		parallel checkoutSteps
 	}
 	finally {
+	  stage('Clean up') {
+		  parallel cleanupSteps
+	  }
 	}
 }
