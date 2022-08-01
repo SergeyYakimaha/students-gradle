@@ -36,13 +36,13 @@ stage('Initialize') {
 
 	checkoutSteps = ['Checkout on Windows' : createCheckoutStep('windows')]
 
-	buildAndTestSteps = ['Build on Windows' : createBuildStep('windows')]
-
-	collateSteps = ['Collate test results' : createCollateTestsSteps('windows')]
-
-	publishSteps = ['Publish on Windows' : createPublishSteps('windows')]
-
-	cleanupSteps = ['Clean up on Windows' : createCleanupStep('windows')]
+// 	buildAndTestSteps = ['Build on Windows' : createBuildStep('windows')]
+//
+// 	collateSteps = ['Collate test results' : createCollateTestsSteps('windows')]
+//
+// 	publishSteps = ['Publish on Windows' : createPublishSteps('windows')]
+//
+// 	cleanupSteps = ['Clean up on Windows' : createCleanupStep('windows')]
 }
 
 try {
