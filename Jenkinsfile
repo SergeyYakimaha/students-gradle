@@ -8,7 +8,7 @@ def cleanupSteps
 
 def createCheckoutStep(platform) {
     return {
-        //node(label: platform) {
+        node(label: platform) {
         node() {
             stage("Checkout on $platform") {
                 checkout scm
@@ -35,7 +35,7 @@ def createCheckoutStep(platform) {
 
 stage('Initialize') {
 
-	checkoutSteps = ['Checkout on Windows' : createCheckoutStep('windows')]
+	checkoutSteps = ['Checkout on Windows' : createCheckoutStep(null)]
 
 // 	buildAndTestSteps = ['Build on Windows' : createBuildStep('windows')]
 //
