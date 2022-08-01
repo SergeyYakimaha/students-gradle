@@ -49,9 +49,9 @@ try {
 	stage('Checkout') {
 		parallel checkoutSteps
 	}
-	finally {
-	  stage('Clean up') {
-		  parallel cleanupSteps
-	  }
+
+} finally {
+	stage('Clean up') {
+		parallel cleanupSteps
 	}
 }
