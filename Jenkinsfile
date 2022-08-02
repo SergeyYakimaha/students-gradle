@@ -34,7 +34,7 @@ def createCleanAndBuild(platform) {
     return {
         node {
           stage('Gradle Clean and assemble') {
-                sh './gradlew clean assemble'
+                bin('gradlew clean assemble')
           }
         }
     }
