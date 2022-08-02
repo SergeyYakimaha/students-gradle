@@ -8,9 +8,7 @@ def createCheckoutStep(platform) {
 //             }
 //         }
         node {
-            stage("Checkout on $platform") {
-                checkout scm
-            }
+          checkout scm
         }
     }
 }
