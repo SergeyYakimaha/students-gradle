@@ -33,9 +33,7 @@ def createCleanupStep(platform) {
 def createCleanAndBuild(platform) {
     return {
         node {
-          stage('Gradle Clean and assemble') {
-                bat('gradlew clean assemble')
-          }
+          bat('gradlew clean assemble')
         }
     }
 }
