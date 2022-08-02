@@ -54,7 +54,7 @@ def createCleanupStep(platform) {
 def createCleanAndBuild(platform) {
     return {
         node {
-          bat('gradlew clean assemble')
+          bat('gradlew clean build')
         }
     }
 }
@@ -95,9 +95,9 @@ def dockerStart(image, args = '', command = '') {
 //////////////////////////////////////////////////////////////////////////////
 
 def dockerStop(image) {
-  println "Stopping $instance.image"
+  println "Stopping $image"
   try {
-    exec(label: "Stop docker image $instance.image", script: "docker stop $image")
+    exec(label: "Stop docker image $image", script: "docker stop $image")
   } catch (e) {
     println "Exception thrown stopping docker instance $image $e.message"
   }
@@ -115,7 +115,7 @@ stage('Initialize') {
 
 	startPostgresSteps = ['Start postgres' : createStartPostgres('Vision1')]
 
-	cleanAndBuildSteps = ['Clean and assemble on Windows' : createCleanAndBuild('Vision1')]
+	cleanAndBuildSteps = ['Clean and build on Windows' : createCleanAndBuild('Vision1')]
 
 	stopPostgresSteps = ['Stop postgres' : createStopPostgres('Vision1')]
 
@@ -132,7 +132,7 @@ try {
 	  parallel startPostgresSteps
 	}
 
-	stage('Clean and assemble') {
+	stage('Clean and Build') {
 	  parallel cleanAndBuildSteps
 	}
 
