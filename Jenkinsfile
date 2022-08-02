@@ -87,7 +87,7 @@ def dockerStart(image, args = '', command = '') {
 
     println "Starting docker image $image"
 
-    def id = exec(label: "Start docker image $image", returnStdout: true, script: "docker run $image").trim()
+    def id = exec(label: "Start docker image $image", returnStdout: true, script: "docker start $image").trim()
     println "id: $id"
 
     def hostname = exec(returnStdout: true, script: "docker inspect -f $ipAddress $id").trim()
