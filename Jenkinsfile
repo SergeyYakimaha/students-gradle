@@ -6,10 +6,8 @@ def cleanupSteps
 def createCheckoutStep(platform) {
     return {
         node(label: platform) {
-        node {
             stage("Checkout on $platform") {
                 checkout scm
-            }
         }
     }
 }
@@ -19,9 +17,7 @@ def createCheckoutStep(platform) {
 def createCleanupStep(platform) {
     return {
         node(label: platform) {
-        node {
             deleteDir()
-        }
     }
 }
 
