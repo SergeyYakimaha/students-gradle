@@ -2,14 +2,12 @@
 
 def createCheckoutStep(platform) {
     return {
-           node {
+        //node(label: platform) {
+        node {
             stage("Checkout on $platform") {
                 checkout scm
-           }
-//         node(label: platform) {
-//             stage("Checkout on $platform") {
-//                 checkout scm
-//         }
+            }
+        }
     }
 }
 
@@ -17,11 +15,10 @@ def createCheckoutStep(platform) {
 
 def createCleanupStep(platform) {
     return {
-           node {
-              deleteDir()
-           }
-//         node(label: platform) {
-//             deleteDir()
+        //node(label: platform) {
+        node {
+            deleteDir()
+        }
     }
 }
 
