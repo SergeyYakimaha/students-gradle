@@ -25,18 +25,9 @@ def createCleanupStep(platform) {
 
 stage('Initialize') {
 
-	checkoutSteps = ['Checkout on Windows' : createCheckoutStep('Vision1'),
-					 'Checkout on Linux' : createCheckoutStep('WindowsSlave_Optimiza')]
+	checkoutSteps = ['Checkout on Windows' : createCheckoutStep('Vision1')]
 
-// 	buildAndTestSteps = ['Build on Windows' : createBuildStep('windows'),
-// 						 'Build on Linux' : createBuildStep('linux')]
-//
-// 	collateSteps = ['Collate test results' : createCollateTestsSteps('windows')]
-//
-// 	publishSteps = ['Publish on Windows' : createPublishSteps('windows')]
-//
-	cleanupSteps = ['Clean up on Windows' : createCleanupStep('Vision1'),
-					'Clean up on Linux' : createCleanupStep('WindowsSlave_Optimiza')]
+	cleanupSteps = ['Clean up on Windows' : createCleanupStep('Vision1')]
 }
 
 try {
