@@ -2,7 +2,12 @@
 
 def createCheckoutStep(platform) {
     return {
-        node(label: platform) {
+//         node(label: platform) {
+//             stage("Checkout on $platform") {
+//                 checkout scm
+//             }
+//         }
+        node {
             stage("Checkout on $platform") {
                 checkout scm
             }
@@ -14,7 +19,10 @@ def createCheckoutStep(platform) {
 
 def createCleanupStep(platform) {
     return {
-        node(label: platform) {
+//         node(label: platform) {
+//             deleteDir()
+//         }
+        node {
             deleteDir()
         }
     }
@@ -27,11 +35,9 @@ def cleanupSteps
 
 stage('Initialize') {
 
-	checkoutSteps = ['Checkout on Windows' : createCheckoutStep('Vision1')/*,
-					 'Checkout on Linux' : createCheckoutStep('WindowsSlave_Optimiza')*/]
+	checkoutSteps = ['Checkout on Windows' : createCheckoutStep('Vision1')]
 
-	cleanupSteps = ['Clean up on Windows' : createCleanupStep('Vision1')/*,
-					'Clean up on Linux' : createCleanupStep('WindowsSlave_Optimiza')*/]
+	cleanupSteps = ['Clean up on Windows' : createCleanupStep('Vision1')]
 }
 
 try {
