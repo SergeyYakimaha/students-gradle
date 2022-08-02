@@ -1,10 +1,8 @@
-nodeLabel = "Vision1"
-
 //////////////////////////////////////////////////////////////////////////////
 
-def checkoutStep() {
+def createCheckoutStep(platform) {
     return {
-//         node(nodeLabel) {
+//         node(label: platform) {
 //             stage("Checkout on $platform") {
 //                 checkout scm
 //             }
@@ -15,17 +13,11 @@ def checkoutStep() {
     }
 }
 
-def createCleanAndBuildSteps() {
-    return {
-        node {
-          bat('gradlew clean assemble')
-        }
-    }
-}
+//////////////////////////////////////////////////////////////////////////////
 
-def cleanupStep() {
+def createCleanupStep(platform) {
     return {
-//         node(nodeLabel) {
+//         node(label: platform) {
 //             deleteDir()
 //         }
         node {
@@ -34,7 +26,9 @@ def cleanupStep() {
     }
 }
 
-def startPostgresStep() {
+//////////////////////////////////////////////////////////////////////////////
+
+def createCleanAndBuild(platform) {
     return {
         node {
           bat('gradlew clean assemble')
@@ -42,33 +36,65 @@ def startPostgresStep() {
     }
 }
 
-def stopPostgresStep() {
+//////////////////////////////////////////////////////////////////////////////
+
+def createStartPostgres(platform) {
     return {
         node {
-          println 'stop Postgres'
+          println "start Postgres"
         }
     }
 }
 
+//////////////////////////////////////////////////////////////////////////////
+
+def createStopPostgres(platform) {
+    return {
+        node {
+          println "stop Postgres"
+        }
+    }
+}
+
+def checkoutSteps
+def cleanupSteps
+def cleanAndBuildSteps
+def startPostgresSteps
+def stopPostgresSteps
+
+stage('Initialize') {
+
+	checkoutSteps = ['Checkout on Windows' : createCheckoutStep('Vision1')]
+
+	startPostgresSteps = ['Start postgres' : createStartPostgres('Vision1')]
+
+	cleanAndBuildSteps = ['Clean and assemble on Windows' : createCleanAndBuild('Vision1')]
+
+	stopPostgresSteps = ['Stop postgres' : createStopPostgres('Vision1')]
+
+	cleanupSteps = ['Clean up on Windows' : createCleanupStep('Vision1')]
+
+}
+
 try {
 	stage('Checkout') {
-		parallel checkoutStep
+		parallel checkoutSteps
 	}
 
 	stage('Start Postgres') {
-		parallel startPostgresStep
+	  parallel startPostgresSteps
 	}
 
 	stage('Clean and assemble') {
-	  parallel createCleanAndBuildSteps
+	  parallel cleanAndBuildSteps
 	}
 
-	stage('Stop Postgres') {
+	stage('Stop stopPostgres') {
 	  parallel stopPostgresStep
 	}
 
 } finally {
 	stage('Clean up') {
-		parallel cleanupStep
+		parallel cleanupSteps
 	}
 }
