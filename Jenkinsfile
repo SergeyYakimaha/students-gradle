@@ -41,7 +41,8 @@ def createCleanAndBuild(platform) {
 def createStartPostgres(platform) {
     return {
         node {
-          println "start Postgres"
+          def image = 'postgresql10.21-jenkins'
+          return dockerStart(image)
         }
     }
 }
@@ -51,9 +52,34 @@ def createStartPostgres(platform) {
 def createStopPostgres(platform) {
     return {
         node {
-          println "stop Postgres"
+          def image = 'postgresql10.21-jenkins'
+          return dockerStop(image)
         }
     }
+}
+
+//////////////////////////////////////////////////////////////////////////////
+
+def dockerStart(image, args = '', command = '') {
+
+    println "Starting docker image $image"
+
+    def id = exec(label: "Start docker image $image", returnStdout: true, script: "docker run $image").trim()
+    println "id: $id"
+
+    def hostname = exec(returnStdout: true, script: "docker inspect -f $ipAddress $id").trim()
+    println "hostname: $hostname"
+}
+
+//////////////////////////////////////////////////////////////////////////////
+
+def dockerStop(image) {
+  println "Stopping $instance.image"
+  try {
+    exec(label: "Stop docker image $instance.image", script: "docker stop $image")
+  } catch (e) {
+    println "Exception thrown stopping docker instance $image $e.message"
+  }
 }
 
 def checkoutSteps
@@ -89,7 +115,7 @@ try {
 	  parallel cleanAndBuildSteps
 	}
 
-	stage('Stop stopPostgres') {
+	stage('Stop Postgres') {
 	  parallel stopPostgresSteps
 	}
 
