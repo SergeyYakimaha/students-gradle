@@ -34,9 +34,7 @@ def createCleanAndBuild(platform) {
     return {
         node {
           stage('Gradle Clean and Build') {
-            steps {
                 bin('gradlew clean assemble')
-            }
         }
     }
 }
@@ -52,7 +50,6 @@ stage('Initialize') {
 	cleanAndBuildSteps = ['Clean and Assemble on Windows' : createCleanAndBuild('Vision1')]
 
 	cleanupSteps = ['Clean up on Windows' : createCleanupStep('Vision1')]
-
 
 }
 
