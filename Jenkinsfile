@@ -33,8 +33,8 @@ def createCleanupStep(platform) {
 def createCleanAndBuild(platform) {
     return {
         node {
-          stage('Gradle Clean and Build') {
-                bin('gradlew clean assemble')
+          stage('Gradle Clean and assemble') {
+                sh './gradlew clean assemble'
         }
     }
 }
@@ -47,7 +47,7 @@ stage('Initialize') {
 
 	checkoutSteps = ['Checkout on Windows' : createCheckoutStep('Vision1')]
 
-	cleanAndBuildSteps = ['Clean and Assemble on Windows' : createCleanAndBuild('Vision1')]
+	cleanAndBuildSteps = ['Clean and assemble on Windows' : createCleanAndBuild('Vision1')]
 
 	cleanupSteps = ['Clean up on Windows' : createCleanupStep('Vision1')]
 
@@ -58,7 +58,7 @@ try {
 		parallel checkoutSteps
 	}
 
-	stage('Clean and Assemble') {
+	stage('Clean and assemble') {
 	  parallel cleanAndBuildSteps
 	}
 
