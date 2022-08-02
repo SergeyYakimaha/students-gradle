@@ -23,7 +23,7 @@ def createCleanAndBuildSteps() {
     }
 }
 
-def createCleanupStep() {
+def cleanupStep() {
     return {
 //         node(nodeLabel) {
 //             deleteDir()
