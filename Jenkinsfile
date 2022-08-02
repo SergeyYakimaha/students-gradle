@@ -2,7 +2,7 @@ nodeLabel = "Vision1"
 
 //////////////////////////////////////////////////////////////////////////////
 
-def checkoutStep {
+def checkoutStep() {
     return {
 //         node(nodeLabel) {
 //             stage("Checkout on $platform") {
@@ -15,7 +15,7 @@ def checkoutStep {
     }
 }
 
-def createCleanAndBuildSteps {
+def createCleanAndBuildSteps() {
     return {
         node {
           bat('gradlew clean assemble')
@@ -23,7 +23,7 @@ def createCleanAndBuildSteps {
     }
 }
 
-def cleanupStep {
+def cleanupStep() {
     return {
 //         node(nodeLabel) {
 //             deleteDir()
@@ -34,7 +34,7 @@ def cleanupStep {
     }
 }
 
-def startPostgresStep {
+def startPostgresStep() {
     return {
         node {
           bat('gradlew clean assemble')
@@ -42,7 +42,7 @@ def startPostgresStep {
     }
 }
 
-def stopPostgresStep {
+def stopPostgresStep() {
     return {
         node {
           println 'stop Postgres'
