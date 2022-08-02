@@ -1,6 +1,3 @@
-def checkoutSteps
-def cleanupSteps
-
 //////////////////////////////////////////////////////////////////////////////
 
 def createCheckoutStep(platform) {
@@ -23,18 +20,22 @@ def createCleanupStep(platform) {
 
 //////////////////////////////////////////////////////////////////////////////
 
+def checkoutSteps
+def cleanupSteps
+
 stage('Initialize') {
 
-	checkoutSteps = ['Checkout on Windows' : createCheckoutStep('Vision1')]
+	checkoutSteps = ['Checkout on Windows' : createCheckoutStep('windows')/*,
+					 'Checkout on Linux' : createCheckoutStep('linux')*/]
 
-	cleanupSteps = ['Clean up on Windows' : createCleanupStep('Vision1')]
+	cleanupSteps = ['Clean up on Windows' : createCleanupStep('windows')/*,
+					'Clean up on Linux' : createCleanupStep('linux')*/]
 }
 
 try {
 	stage('Checkout') {
 		parallel checkoutSteps
 	}
-
 } finally {
 	stage('Clean up') {
 		parallel cleanupSteps
