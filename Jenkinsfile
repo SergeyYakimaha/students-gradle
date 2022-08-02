@@ -90,7 +90,7 @@ try {
 	}
 
 	stage('Stop stopPostgres') {
-	  parallel stopPostgresStep
+	  parallel stopPostgresSteps
 	}
 
 } finally {
