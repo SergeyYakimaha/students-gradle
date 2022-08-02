@@ -64,7 +64,7 @@ def createCleanAndBuild(platform) {
 def createStartPostgres(platform) {
     return {
         node {
-          def image = 'postgresql10.21-jenkins'
+          def image = 'postgresql10.21-jenkins:latest'
           return dockerStart(image)
         }
     }
@@ -75,7 +75,7 @@ def createStartPostgres(platform) {
 def createStopPostgres(platform) {
     return {
         node {
-          def image = 'postgresql10.21-jenkins'
+          def image = 'postgresql10.21-jenkins:latest'
           return dockerStop(image)
         }
     }
