@@ -1,8 +1,10 @@
+nodeLabel = "Vision1"
+
 //////////////////////////////////////////////////////////////////////////////
 
-def createCheckoutStep(platform) {
+def createCheckoutStep() {
     return {
-//         node(label: platform) {
+//         node(nodeLabel) {
 //             stage("Checkout on $platform") {
 //                 checkout scm
 //             }
@@ -13,11 +15,9 @@ def createCheckoutStep(platform) {
     }
 }
 
-//////////////////////////////////////////////////////////////////////////////
-
-def createCleanupStep(platform) {
+def createCleanupStep() {
     return {
-//         node(label: platform) {
+//         node(nodeLabel) {
 //             deleteDir()
 //         }
         node {
@@ -26,41 +26,41 @@ def createCleanupStep(platform) {
     }
 }
 
-//////////////////////////////////////////////////////////////////////////////
-
-def createCleanAndBuild(platform) {
+def startPostgresStep() {
     return {
         node {
-          bat('gradlew clean assemble')
+          println 'start Postgres'
         }
     }
 }
 
-def checkoutSteps
-def cleanupSteps
-def cleanAndBuildSteps
-
-stage('Initialize') {
-
-	checkoutSteps = ['Checkout on Windows' : createCheckoutStep('Vision1')]
-
-	cleanAndBuildSteps = ['Clean and assemble on Windows' : createCleanAndBuild('Vision1')]
-
-	cleanupSteps = ['Clean up on Windows' : createCleanupStep('Vision1')]
-
+def stopPostgresStep() {
+    return {
+        node {
+          println 'stop Postgres'
+        }
+    }
 }
 
 try {
 	stage('Checkout') {
-		parallel checkoutSteps
+		parallel checkoutStep()
+	}
+
+	stage('Start Postgres') {
+		parallel startPostgresStep()
 	}
 
 	stage('Clean and assemble') {
-	  parallel cleanAndBuildSteps
+	  parallel createCleanAndBuildSteps()
+	}
+
+	stage('Stop Postgres') {
+	  parallel stopPostgresStep()
 	}
 
 } finally {
 	stage('Clean up') {
-		parallel cleanupSteps
+		parallel cleanupStep()
 	}
 }
