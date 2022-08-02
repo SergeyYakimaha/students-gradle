@@ -1,5 +1,28 @@
 //////////////////////////////////////////////////////////////////////////////
 
+//script: String, encoding?, String, returnStatus?: boolean, returnStdout?: boolean
+def exec(Map args = [:]) {
+
+    println "exec called with $args"
+
+    if (args.returnStdout == null) {
+        args.returnStdout = false
+    }
+
+    if (isUnix()) {
+        return sh(script: args.script, returnStdout: args.returnStdout, label: args.label)
+
+    } else {
+        if (args.returnStdout && !args.script.startsWith('@')) {
+            args.script = '@' + args.script
+        }
+
+        return bat(script: args.script, returnStdout: args.returnStdout, label: args.label)
+    }
+}
+
+//////////////////////////////////////////////////////////////////////////////
+
 def createCheckoutStep(platform) {
     return {
 //         node(label: platform) {
