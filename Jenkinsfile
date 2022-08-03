@@ -103,11 +103,24 @@ def dockerStop(image) {
   }
 }
 
+//////////////////////////////////////////////////////////////////////////////
+
+def createPublishStep(image) {
+    return {
+        node {
+          bat('gradlew publish')
+        }
+    }
+}
+
+//////////////////////////////////////////////////////////////////////////////
+
 def checkoutSteps
 def cleanupSteps
 def cleanAndBuildSteps
 def startPostgresSteps
 def stopPostgresSteps
+def publishSteps
 
 stage('Initialize') {
 
@@ -118,6 +131,8 @@ stage('Initialize') {
 	cleanAndBuildSteps = ['Clean and build on Windows' : createCleanAndBuild('Vision1')]
 
 	stopPostgresSteps = ['Stop postgres' : createStopPostgres('Vision1')]
+
+	publishSteps = ['Publish' : createPublishStep('Vision1')]
 
 	cleanupSteps = ['Clean up on Windows' : createCleanupStep('Vision1')]
 
@@ -138,6 +153,10 @@ try {
 
 	stage('Stop Postgres') {
 	  parallel stopPostgresSteps
+	}
+
+	stage('Publish') {
+	  parallel publishSteps
 	}
 
 } finally {
