@@ -64,8 +64,9 @@ def createCleanAndBuild(platform) {
 def createStartPostgres(platform) {
     return {
         node {
-          def image = '7cab63bfd74a'
-          return dockerStart(image)
+          def image = 'postgres:10.21'
+          def args =  '--name postgres_slsdev_v1 -e POSTGRES_PASSWORD=Password1 -p 5432:5432'
+          return dockerStart(image, args)
         }
     }
 }
@@ -83,23 +84,42 @@ def createStopPostgres(platform) {
 
 //////////////////////////////////////////////////////////////////////////////
 
-def dockerStart(image, args = '', command = '') {
+def dockerStart(image, args, command = '') {
 
     println "Starting docker image $image"
 
-    def id = exec(label: "Start docker image $image", returnStdout: true, script: "docker start $image").trim()
+    def id = exec(label: "Start docker image $image", returnStdout: true, script: "docker run -d $args $image $command").trim()
     println "id: $id"
 
+    def ipAddress = '{{.NetworkSettings.Networks.nat.IPAddress}}'
+    def hostname = exec(returnStdout: true, script: "docker inspect -f $ipAddress $id").trim()
+    println "hostname: $hostname"
+
+    if (hostname == '' || hostname == null) {
+        exec(script: "docker inspect $id")
+    }
+
+    return ['image': image,
+            'args': args,
+            'id': id,
+            'hostname': hostname]
 }
 
 //////////////////////////////////////////////////////////////////////////////
 
-def dockerStop(image) {
-  println "Stopping $image"
+def dockerExec(instance, commandLine) {
+    if (instance.id != null) {
+        exec(label: "docker exec $instance.image $commandLine", script: "docker exec $instance.id $commandLine")
+    }
+}
+
+//////////////////////////////////////////////////////////////////////////////
+
+def dockerStop(postgres) {
   try {
-    exec(label: "Stop docker image $image", script: "docker stop $image")
+    dockerExec(postgres, 'powershell Stop-Service postgresql-*')
   } catch (e) {
-    println "Exception thrown stopping docker instance $image $e.message"
+    println "Exception thrown stopping postgres $postgres.id $e.message"
   }
 }
 
@@ -155,9 +175,9 @@ try {
 	  parallel stopPostgresSteps
 	}
 
-	stage('Publish') {
-	  parallel publishSteps
-	}
+// 	stage('Publish') {
+// 	  parallel publishSteps
+// 	}
 
 } finally {
 	stage('Clean up') {
