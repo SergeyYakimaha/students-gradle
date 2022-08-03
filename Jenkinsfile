@@ -115,6 +115,8 @@ def dockerStop(dockerContainer) {
   } catch (e) {
     println "Exception thrown stopping and removing $dockerContainer.image $e.message"
   }
+
+  return id
 }
 
 //////////////////////////////////////////////////////////////////////////////
