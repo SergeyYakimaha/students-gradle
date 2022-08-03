@@ -54,14 +54,18 @@ def createCleanupStep(platform) {
 def createCleanAndBuild(platform) {
     return {
         node {
+          def dockerContainer = startPostgres()
+
           bat('gradlew clean build')
+
+          stopPostgres(dockerContainer)
         }
     }
 }
 
 //////////////////////////////////////////////////////////////////////////////
 
-def createStartPostgres(platform) {
+def startPostgres() {
     return {
         node {
           def image = 'postgres:10.21'
@@ -73,11 +77,11 @@ def createStartPostgres(platform) {
 
 //////////////////////////////////////////////////////////////////////////////
 
-def createStopPostgres(platform) {
+def stopPostgres(dockerContainer) {
     return {
         node {
           def image = '7cab63bfd74a'
-          return dockerStop(image)
+          return dockerStop(dockerContainer)
         }
     }
 }
@@ -88,8 +92,8 @@ def dockerStart(image, args, command = '') {
 
     println "Starting docker image $image"
 
-    def id = exec(label: "Start docker image $image", returnStdout: true, script: "docker run -rm $args $image $command").trim()
-    println "id: $id"
+    def id = exec(label: "Start docker image $image", returnStdout: true, script: "docker run -d $args $image $command").trim()
+    println "docker container id: $id"
 
     def ipAddress = '{{.NetworkSettings.Networks.nat.IPAddress}}'
     def hostname = exec(returnStdout: true, script: "docker inspect -f $ipAddress $id").trim()
@@ -115,9 +119,11 @@ def dockerExec(instance, commandLine) {
 
 //////////////////////////////////////////////////////////////////////////////
 
-def dockerStop(postgres) {
+def dockerStop(dockerContainer) {
   try {
-    dockerExec(postgres, 'powershell Stop-Service postgresql-*')
+    def image = dockerContainer.image
+    def args = ''
+    def id = exec(label: "Stop docker container $dockerContainer.id", returnStdout: true, script: "docker stop $args $image $command").trim()
   } catch (e) {
     println "Exception thrown stopping postgres $postgres.id $e.message"
   }
@@ -138,24 +144,17 @@ def createPublishStep(image) {
 def checkoutSteps
 def cleanupSteps
 def cleanAndBuildSteps
-def startPostgresSteps
-def stopPostgresSteps
 def publishSteps
 
 stage('Initialize') {
 
 	checkoutSteps = ['Checkout on Windows' : createCheckoutStep('Vision1')]
 
-	startPostgresSteps = ['Start postgres' : createStartPostgres('Vision1')]
-
 	cleanAndBuildSteps = ['Clean and build on Windows' : createCleanAndBuild('Vision1')]
-
-	stopPostgresSteps = ['Stop postgres' : createStopPostgres('Vision1')]
 
 	publishSteps = ['Publish' : createPublishStep('Vision1')]
 
 	cleanupSteps = ['Clean up on Windows' : createCleanupStep('Vision1')]
-
 }
 
 try {
@@ -163,16 +162,8 @@ try {
 		parallel checkoutSteps
 	}
 
-	stage('Start Postgres') {
-	  parallel startPostgresSteps
-	}
-
 	stage('Clean and Build') {
 	  parallel cleanAndBuildSteps
-	}
-
-	stage('Stop Postgres') {
-	  parallel stopPostgresSteps
 	}
 
 // 	stage('Publish') {
