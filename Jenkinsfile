@@ -100,10 +100,12 @@ def dockerExec(instance, commandLine) {
 
 def dockerStop(dockerContainer) {
   try {
-    exec(label: "Stop docker container $id", returnStdout: true, script: "docker stop $dockerContainer.id").trim()
+    def id = dockerContainer.id
+
+    exec(label: "Stop docker container $id", returnStdout: true, script: "docker stop $id").trim()
     println 'Waiting 5 seconds for container to stop'
     sleep 5
-    exec(label: "Remove docker container $id", returnStdout: true, script: "docker rm $dockerContainer.id").trim()
+    exec(label: "Remove docker container $id", returnStdout: true, script: "docker rm $id").trim()
     println 'Waiting 5 seconds for container to remove'
     sleep 5
     return dockerContainer.id
