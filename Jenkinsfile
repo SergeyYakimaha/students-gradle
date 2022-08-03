@@ -104,6 +104,7 @@ def dockerStop(dockerContainer) {
     def id = dockerContainer.id
     def image = dockerContainer.image
     def args = null
+    def command = null
     println 'Waiting 5 seconds for container to stop'
     println "id = $id"
     println "image = $image"
