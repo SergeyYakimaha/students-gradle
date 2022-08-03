@@ -9,16 +9,11 @@ def exec(Map args = [:]) {
         args.returnStdout = false
     }
 
-    if (isUnix()) {
-        return sh(script: args.script, returnStdout: args.returnStdout, label: args.label)
-
-    } else {
-        if (args.returnStdout && !args.script.startsWith('@')) {
-            args.script = '@' + args.script
-        }
-
-        return bat(script: args.script, returnStdout: args.returnStdout, label: args.label)
+    if (args.returnStdout && !args.script.startsWith('@')) {
+      args.script = '@' + args.script
     }
+
+   return bat(script: args.script, returnStdout: args.returnStdout, label: args.label)
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -108,15 +103,15 @@ def dockerStop(dockerContainer) {
   try {
     def id = dockerContainer.id
     def image = dockerContainer.image
-    def args = ""
+    def args = null
     println 'Waiting 5 seconds for container to stop'
     println "id = $id"
     println "image = $image"
 
-    exec(label: "Stop docker container $id", returnStdout: true, script: "docker stop $args $id $command").trim()
+    exec(label: "Stop docker container $id", returnStdout: true, script: "docker stop $args $image $command").trim()
     println 'Waiting 5 seconds for container to stop'
     sleep 5
-    exec(label: "Remove docker container $id", returnStdout: true, script: "docker rm $args $id $command").trim()
+    exec(label: "Remove docker container $id", returnStdout: true, script: "docker rm $args $image $command").trim()
   } catch (e) {
     println "Exception thrown stopping and removing $dockerContainer.image $e.message"
   }
