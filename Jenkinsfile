@@ -48,18 +48,13 @@ def createCleanupStep(platform) {
 
 def createCleanAndBuild(platform) {
     return {
-      def dockerContainer
-      node {
-        stage("Start docker") {
-          dockerContainer = startPostgres()
-        }
+        node {
+          def dockerContainer = startPostgres()
 
-        bat('gradlew clean build')
+          bat('gradlew clean build')
 
-        stage("Stop docker") {
           stopPostgres(dockerContainer)
         }
-      }
     }
 }
 
@@ -67,7 +62,7 @@ def createCleanAndBuild(platform) {
 
 def startPostgres() {
   def image = 'postgres:10.21'
-  def args = '-e POSTGRES_PASSWORD=Password1 -p 5432:5432'
+  def args = '--name postgres_slsdev_v1 -e POSTGRES_PASSWORD=Password1 -p 5432:5432'
 
   return dockerStart(image, args)
 }
@@ -107,10 +102,10 @@ def dockerStop(dockerContainer) {
   try {
     def id = dockerContainer.id
 
-    exec(label: "Stop docker container $id", returnStdout: true, script: "docker stop $id").trim()
+    exec(label: "Stop docker container $id", returnStdout: true, script: "docker stop $dockerContainer.id").trim()
     println 'Waiting 5 seconds for container to stop'
     sleep 5
-    exec(label: "Remove docker container $id", returnStdout: true, script: "docker rm $id").trim()
+    exec(label: "Remove docker container $id", returnStdout: true, script: "docker rm $dockerContainer.id").trim()
     println 'Waiting 5 seconds for container to remove'
     sleep 5
     return dockerContainer.id
