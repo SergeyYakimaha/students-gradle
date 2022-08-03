@@ -86,20 +86,13 @@ def dockerStart(image, args, command = '') {
     println "Starting docker image $image"
 
     def id = exec(label: "Start docker image $image", returnStdout: true, script: "docker run -d $args $image $command").trim()
-    println "docker container id: $id"
-
-    def ipAddress = '{{.NetworkSettings.Networks.nat.IPAddress}}'
-    def hostname = exec(returnStdout: true, script: "docker inspect -f $ipAddress $id").trim()
-    println "hostname: $hostname"
-
-    if (hostname == '' || hostname == null) {
-        exec(script: "docker inspect $id")
-    }
+    println 'Waiting 5 seconds for container to run'
+    sleep 5
+    println "create new docker container id: $id"
 
     return ['image': image,
             'args': args,
-            'id': id,
-            'hostname': hostname]
+            'id': id]
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -114,10 +107,13 @@ def dockerExec(instance, commandLine) {
 
 def dockerStop(dockerContainer) {
   try {
+    def id = dockerContainer.id
     def image = dockerContainer.image
     def args = ''
     exec(label: "Stop docker container $dockerContainer.id", returnStdout: true, script: "docker stop $args $image $command").trim()
-    exec(label: "Remove docker container $dockerContainer.id", returnStdout: true, script: "docker rm $args $image $command").trim()
+    println 'Waiting 5 seconds for container to stop'
+    sleep 5
+    exec(label: "Remove docker container $dockerContainer.id", returnStdout: true, script: "docker rm $args $id $command").trim()
   } catch (e) {
     println "Exception thrown stopping and removing $dockerContainer.image $e.message"
   }
