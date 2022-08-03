@@ -104,7 +104,7 @@ def dockerStop(dockerContainer) {
     println 'Waiting 5 seconds for container to stop'
     sleep 5
     exec(label: "Remove docker container $id", returnStdout: true, script: "docker rm $dockerContainer.id").trim()
-    println 'Waiting 5 seconds for container to stop'
+    println 'Waiting 5 seconds for container to remove'
     sleep 5
     return dockerContainer.id
   } catch (e) {
