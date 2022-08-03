@@ -75,7 +75,6 @@ def startPostgres() {
 //////////////////////////////////////////////////////////////////////////////
 
 def stopPostgres(dockerContainer) {
-  def image = '7cab63bfd74a'
   return dockerStop(dockerContainer)
 }
 
@@ -107,6 +106,9 @@ def dockerExec(instance, commandLine) {
 
 def dockerStop(dockerContainer) {
   try {
+    println dockerContainer.image
+    println dockerContainer.args
+    println dockerContainer.id
     def id = dockerContainer.id
     def image = dockerContainer.image
     def args = ''
