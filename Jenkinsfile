@@ -100,14 +100,13 @@ def dockerExec(instance, commandLine) {
 
 def dockerStop(dockerContainer) {
   try {
-    def containerId
-    containerId = exec(label: "Stop docker container $id", returnStdout: true, script: "docker stop $dockerContainer.id").trim()
+    exec(label: "Stop docker container $id", returnStdout: true, script: "docker stop $dockerContainer.id").trim()
     println 'Waiting 5 seconds for container to stop'
     sleep 5
-    containerId = exec(label: "Remove docker container $id", returnStdout: true, script: "docker rm $dockerContainer.id").trim()
+    exec(label: "Remove docker container $id", returnStdout: true, script: "docker rm $dockerContainer.id").trim()
     println 'Waiting 5 seconds for container to stop'
     sleep 5
-    return containerId
+    return dockerContainer.id
   } catch (e) {
     println "Exception thrown stopping and removing $dockerContainer.image $e.message"
   }
