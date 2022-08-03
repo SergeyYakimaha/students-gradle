@@ -47,10 +47,11 @@ def createCleanupStep(platform) {
 //////////////////////////////////////////////////////////////////////////////
 
 def createCleanAndBuild(platform) {
+    def dockerContainer
     return {
         node {
           stage("Start docker") {
-            def dockerContainer = startPostgres()
+            dockerContainer = startPostgres()
           }
 
           bat('gradlew clean build')
