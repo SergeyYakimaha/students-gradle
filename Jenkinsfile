@@ -151,9 +151,9 @@ try {
 	  parallel cleanAndBuildSteps
 	}
 
-// 	stage('Publish') {
-// 	  parallel publishSteps
-// 	}
+	stage('Publish nexus') {
+	  parallel publishSteps
+	}
 
 } finally {
 	stage('Clean up') {
