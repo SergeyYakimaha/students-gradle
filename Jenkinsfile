@@ -67,7 +67,7 @@ def createCleanAndBuild(platform) {
 
 def startPostgres() {
   def image = 'postgres:10.21'
-  def args =  '--name postgres_slsdev_v1 -e POSTGRES_PASSWORD=Password1 -p 5432:5432'
+  def args = '--name postgres_slsdev_v1 -e POSTGRES_PASSWORD=Password1 -p 5432:5432'
 
   return dockerStart(image, args)
 }
@@ -75,12 +75,8 @@ def startPostgres() {
 //////////////////////////////////////////////////////////////////////////////
 
 def stopPostgres(dockerContainer) {
-    return {
-        node {
-          def image = '7cab63bfd74a'
-          return dockerStop(dockerContainer)
-        }
-    }
+  def image = '7cab63bfd74a'
+  return dockerStop(dockerContainer)
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -120,9 +116,10 @@ def dockerStop(dockerContainer) {
   try {
     def image = dockerContainer.image
     def args = ''
-    def id = exec(label: "Stop docker container $dockerContainer.id", returnStdout: true, script: "docker stop $args $image $command").trim()
+    exec(label: "Stop docker container $dockerContainer.id", returnStdout: true, script: "docker stop $args $image $command").trim()
+    exec(label: "Remove docker container $dockerContainer.id", returnStdout: true, script: "docker rm $args $image $command").trim()
   } catch (e) {
-    println "Exception thrown stopping postgres $postgres.id $e.message"
+    println "Exception thrown stopping and removing $dockerContainer.image $e.message"
   }
 }
 
