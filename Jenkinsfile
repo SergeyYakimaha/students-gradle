@@ -108,6 +108,8 @@ def dockerStop(dockerContainer) {
     println "id = $id"
     println "image = $image"
 
+    def script1 = "docker stop $args $image $command"
+
     exec(label: "Stop docker container $id", returnStdout: true, script: "docker stop $args $image $command").trim()
     println 'Waiting 5 seconds for container to stop'
     sleep 5
