@@ -49,11 +49,15 @@ def createCleanupStep(platform) {
 def createCleanAndBuild(platform) {
     return {
         node {
-          def dockerContainer = startPostgres()
+          stage("Start docker") {
+            def dockerContainer = startPostgres()
+          }
 
           bat('gradlew clean build')
 
-          stopPostgres(dockerContainer)
+          stage("Stop docker") {
+            stopPostgres(dockerContainer)
+          }
         }
     }
 }
@@ -62,7 +66,7 @@ def createCleanAndBuild(platform) {
 
 def startPostgres() {
   def image = 'postgres:10.21'
-  def args = '--name postgres_slsdev_v1 -e POSTGRES_PASSWORD=Password1 -p 5432:5432'
+  def args = '-e POSTGRES_PASSWORD=Password1 -p 5432:5432'
 
   return dockerStart(image, args)
 }
