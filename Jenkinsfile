@@ -66,13 +66,10 @@ def createCleanAndBuild(platform) {
 //////////////////////////////////////////////////////////////////////////////
 
 def startPostgres() {
-    return {
-        node {
-          def image = 'postgres:10.21'
-          def args =  '--name postgres_slsdev_v1 -e POSTGRES_PASSWORD=Password1 -p 5432:5432'
-          return dockerStart(image, args)
-        }
-    }
+  def image = 'postgres:10.21'
+  def args =  '--name postgres_slsdev_v1 -e POSTGRES_PASSWORD=Password1 -p 5432:5432'
+
+  return dockerStart(image, args)
 }
 
 //////////////////////////////////////////////////////////////////////////////
