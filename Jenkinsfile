@@ -88,7 +88,7 @@ def dockerStart(image, args, command = '') {
 
     println "Starting docker image $image"
 
-    def id = exec(label: "Start docker image $image", returnStdout: true, script: "docker run -d $args $image $command").trim()
+    def id = exec(label: "Start docker image $image", returnStdout: true, script: "docker run -rm $args $image $command").trim()
     println "id: $id"
 
     def ipAddress = '{{.NetworkSettings.Networks.nat.IPAddress}}'
